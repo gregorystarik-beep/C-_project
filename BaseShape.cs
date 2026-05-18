@@ -10,7 +10,7 @@ namespace final_project
     [JsonDerivedType(typeof(CircleShape), typeDiscriminator: "Circle")]
     [JsonDerivedType(typeof(RectangleShape), typeDiscriminator: "Rectangle")]
     [JsonDerivedType(typeof(ParallelogramShape), typeDiscriminator: "Parallelogram")]
-    public abstract class BaseShape
+    public abstract class BaseShape//base abstract class
     {
         public int X
         {

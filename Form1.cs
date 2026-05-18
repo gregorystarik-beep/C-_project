@@ -76,7 +76,7 @@ namespace C__project
             }
         }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)//lets you draw
         {
             Graphics g = e.Graphics;
             if (flag)
@@ -102,7 +102,7 @@ namespace C__project
 
         }
 
-        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)//lets you put shapes on picture box
         {
             int i;
             if (flag)
@@ -191,7 +191,7 @@ namespace C__project
                         }
                     }
                 }
-                switch (currentShape)
+                switch (currentShape)//checks shape to see what shape it is
                 {
                     case "Circle":
                         shapeList.Add(new CircleShape(e.X, e.Y, currentColor, 50));
@@ -209,7 +209,7 @@ namespace C__project
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e)//lets you choose colors
         {
             currentColor = Color.Yellow;
         }
@@ -223,8 +223,8 @@ namespace C__project
         {
             currentColor = Color.DarkBlue;
         }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)//lets you choose shapes
         {
             if (radioButton1.Checked == true)
             {
@@ -251,7 +251,7 @@ namespace C__project
             }
         }
 
-        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)//comment to notify you that you can draw lines
         {
             if (radioButton4.Checked)
             {
@@ -261,7 +261,7 @@ namespace C__project
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)//saves
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.InitialDirectory = Directory.GetCurrentDirectory();

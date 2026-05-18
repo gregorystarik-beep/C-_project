@@ -43,7 +43,7 @@ namespace final_project
         }
         public override bool IsPointInside(int mouseX, int mouseY)
         {
-            return (mouseX >= X && mouseX <= X + Width && mouseY >= Y && mouseY <= Y + Height);
+            return (mouseX >= X && mouseX <= X + Width && mouseY >= Y && mouseY <= Y + Height);//checks if pont inside shape
         }
     }
 }
