@@ -17,12 +17,12 @@ namespace C__project
         {
             InitializeComponent();
         }
-        private BaseShape? draggedShape = null;
+        private BaseShape? draggedShape = null;//lets you dragg the shapes
         private Point dragOffset;
         // ---------------------
         bool flag = false;
 
-        private List<BaseShape> shapeList = new List<BaseShape>();
+        private List<BaseShape> shapeList = new List<BaseShape>();//list of shape
 
         Color currentColor = Color.Empty;
 
@@ -36,14 +36,14 @@ namespace C__project
 
         Point dragStartPoint;
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)//the function lets you move the shapes
         {
             pictureBox1.MouseDown += pictureBox1_MouseDown;
             pictureBox1.MouseMove += pictureBox1_MouseMove;
             pictureBox1.MouseUp += pictureBox1_MouseUp;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)//choose between start and end
         {
             flag = !flag;
             if (flag)
@@ -61,7 +61,7 @@ namespace C__project
             pictureBox1.Invalidate();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)//lets you load the previus draw
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.InitialDirectory = Directory.GetCurrentDirectory();
@@ -85,7 +85,7 @@ namespace C__project
             }
         }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)//lets you draw
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)//lets you draw on of our shapes
         {
             Graphics g = e.Graphics;
             if (flag)
@@ -102,11 +102,11 @@ namespace C__project
             }
             else
             {
-                g.Clear(Color.White);
+                g.Clear(Color.White);//delets it
             }
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void pictureBox1_Click(object sender, EventArgs e)//
         {
 
         }
@@ -122,7 +122,7 @@ namespace C__project
             }
 
             int i;
-            if (flag)
+            if (flag)//if flag is 1
             {
                 if (e.Button == MouseButtons.Right)
                 {
@@ -130,7 +130,7 @@ namespace C__project
                     {
                         if (shapeList[i].IsPointInside(e.X, e.Y))
                         {
-                            BaseShape shapeToDelete = shapeList[i];
+                            BaseShape shapeToDelete = shapeList[i];//runs and checks to see if there are shapes to delete
                             shapeList.RemoveAt(i);
                             for (int j = connectionsList.Count - 1; j >= 0; j--)
                             {
@@ -170,7 +170,7 @@ namespace C__project
                                 {
                                     connectionsList.Add(new LineConnections(firstSelectedShape, secondSelectioinShape));
                                     pictureBox1.Invalidate();
-                                }
+                                }//tells you thar the shapes cannont be connected
                                 else
                                 {
                                     MessageBox.Show("הצורות אינן זהות, או שלחצת על אותה הצורה פעמיים!");
@@ -205,7 +205,7 @@ namespace C__project
                                     {
                                         connectionsList.RemoveAt(j);
                                     }
-                                }
+                                }//this part lets you change a Parallelogram to a Rectangle with offset calculations
                                 pictureBox1.Invalidate();
                             }
                             return;
@@ -221,7 +221,7 @@ namespace C__project
                             shapeList.Add(new ParallelogramShape(e.X, e.Y, currentColor, 20, 50, 50));
                             break;
                         case "Rectangle":
-                            shapeList.Add(new RectangleShape(e.X, e.Y, currentColor, 50, 100));
+                            shapeList.Add(new RectangleShape(e.X, e.Y, currentColor, 50, 100));//size width
                             break;
                         default:
                             break;
@@ -245,7 +245,7 @@ namespace C__project
             currentColor = Color.DarkBlue;
         }
         
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)//lets you choose shapes
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)//lets you choose which shape you want to put
         {
             if (radioButton1.Checked == true)
             {
@@ -276,7 +276,7 @@ namespace C__project
         {
             if (radioButton4.Checked)
             {
-                IsLineMode = true;
+                IsLineMode = true;//checks to see if we are in line mode
                 firstSelectedShape = null;
                 MessageBox.Show("עברת למצב מתיחת קווים! לחץ על שתי צורות זהות כדי לחבר אותן.");
             }
@@ -306,17 +306,17 @@ namespace C__project
                 File.WriteAllText(saveFileDialog1.FileName, json);
             }
         }
-        private void pictureBox1_MouseDown(object? sender, MouseEventArgs e)
+        private void pictureBox1_MouseDown(object? sender, MouseEventArgs e)//lets drag the shapes on the screen
         {
             dragStartPoint = e.Location; 
 
             if (!flag || IsLineMode) return;
             for (int i = shapeList.Count - 1; i >= 0; i--)
             {
-                if (shapeList[i].IsPointInside(e.X, e.Y))
+                if (shapeList[i].IsPointInside(e.X, e.Y))//if inside the screen
                 {
                     draggedShape = shapeList[i];
-                    dragOffset = new Point(e.X - draggedShape.X, e.Y - draggedShape.Y);
+                    dragOffset = new Point(e.X - draggedShape.X, e.Y - draggedShape.Y);//calculates the drag point
                     return;
                 }
             }
@@ -340,8 +340,8 @@ namespace C__project
     }
     public class MyGameData
     {
-        public List<BaseShape>? Shapes { get; set; }
-        public List<LineConnections>? Connections { get; set; }
+        public List<BaseShape>? Shapes { get; set; }//uses lists
+        public List<LineConnections>? Connections { get; set; }//list of lines
     }
     public class ColorJsonConverter : JsonConverter<Color>
     {
@@ -353,6 +353,6 @@ namespace C__project
         {
             writer.WriteNumberValue(value.ToArgb());
         }
-    }
+    }//helps to save and load
 
 }

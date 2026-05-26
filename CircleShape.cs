@@ -16,7 +16,7 @@ namespace final_project
             Radius = radius;
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g)//lets you draw circle with raduis
         {
             using (Brush brush = new SolidBrush(ShapeColor))
             {
@@ -27,7 +27,7 @@ namespace final_project
 
         public override bool IsPointInside(int mouseX, int mouseY)
         {
-            return Math.Sqrt((mouseX - X) * (mouseX - X) + (mouseY - Y) * (mouseY - Y)) < Radius;
+            return Math.Sqrt((mouseX - X) * (mouseX - X) + (mouseY - Y) * (mouseY - Y)) < Radius;//uses pythagoras if you click inside circle
         }
     }
 }

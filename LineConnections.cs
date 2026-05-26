@@ -16,7 +16,7 @@ namespace final_project
             get; set;
         }
 
-        public LineConnections(BaseShape shapeA, BaseShape shapeB)
+        public LineConnections(BaseShape shapeA, BaseShape shapeB)//only if both shapes are the same
         {
             ShapeA = shapeA;
             ShapeB = shapeB;
@@ -33,7 +33,7 @@ namespace final_project
             }
         }
 
-        private PointF GetShapeCenter(BaseShape shape)
+        private PointF GetShapeCenter(BaseShape shape)//calculates the center and draws the line
         {
             if (shape is ParallelogramShape para)
             {

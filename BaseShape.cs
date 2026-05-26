@@ -34,4 +34,4 @@ namespace final_project
 
         public abstract bool IsPointInside(int mouseX, int mouseY);
     }
-}
+}//base class all classes derive from him

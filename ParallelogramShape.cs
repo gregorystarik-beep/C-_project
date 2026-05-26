@@ -4,7 +4,7 @@ using System.Text;
 
 namespace final_project
 {
-    public class ParallelogramShape : BaseShape
+    public class ParallelogramShape : BaseShape// Parallelogra derived from base shape
     {
         public int Offset
         {
@@ -28,14 +28,14 @@ namespace final_project
             this.Width = width;
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw(Graphics g)//lets you draw the  Parallelogram with  mouse cordinates  and checks if its the right shape
         {
             PointF point1 = new PointF((X + Offset), Y);
             PointF point2 = new PointF((X + Offset + Width), Y);
             PointF point3 = new PointF((X + Width), (Y + Height));
             PointF point4 = new PointF(X, (Y + Height));
             PointF[] pointsArray = [point1, point2, point3, point4];
-
+            //builds the Parallelogram
             using (Brush brush = new SolidBrush(ShapeColor))
             {
                 g.FillPolygon(brush, pointsArray);
