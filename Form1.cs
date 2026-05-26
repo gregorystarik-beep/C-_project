@@ -9,12 +9,17 @@ using System.Windows.Forms;
 namespace C__project
 
 {
+
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
         }
+        private BaseShape? draggedShape = null;
+        private Point dragOffset;
+        // ---------------------
         bool flag = false;
 
         private List<BaseShape> shapeList = new List<BaseShape>();
@@ -27,11 +32,15 @@ namespace C__project
 
         List<LineConnections> connectionsList = new List<LineConnections>();
 
-        BaseShape firstSelectedShape = null;
+        BaseShape? firstSelectedShape = null;
+
+        Point dragStartPoint;
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            pictureBox1.MouseDown += pictureBox1_MouseDown;
+            pictureBox1.MouseMove += pictureBox1_MouseMove;
+            pictureBox1.MouseUp += pictureBox1_MouseUp;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -65,12 +74,12 @@ namespace C__project
                 string json = File.ReadAllText(openFileDialog1.FileName);
                 JsonSerializerOptions options = new JsonSerializerOptions();
                 options.Converters.Add(new ColorJsonConverter()); 
-                MyGameData loadedData = JsonSerializer.Deserialize<MyGameData>(json, options);
+                MyGameData? loadedData = JsonSerializer.Deserialize<MyGameData>(json, options);
 
                 if (loadedData != null)
                 {
-                    shapeList = loadedData.Shapes;
-                    connectionsList = loadedData.Connections;
+                    shapeList = loadedData.Shapes ?? new List<BaseShape>(); ;
+                    connectionsList = loadedData.Connections ?? new List<LineConnections>();
                     pictureBox1.Invalidate(); 
                 }
             }
@@ -102,15 +111,19 @@ namespace C__project
 
         }
 
-        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)//lets you put shapes on picture box
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e) //lets you put shapes on picture box
         {
+            int deltaX = Math.Abs(e.X - dragStartPoint.X);
+            int deltaY = Math.Abs(e.Y - dragStartPoint.Y);
+
+            if (deltaX > 4 || deltaY > 4)
+            {
+                return; 
+            }
+
             int i;
             if (flag)
             {
-                if(!IsLineMode && (currentShape == "" || currentColor == Color.Empty))
-                {
-                    return;
-                }
                 if (e.Button == MouseButtons.Right)
                 {
                     for (i = shapeList.Count - 1; i >= 0; i--)
@@ -131,8 +144,14 @@ namespace C__project
                             return;
                         }
                     }
-                    return; 
+                    return;
                 }
+
+                if (!IsLineMode && (currentShape == "" || currentColor == Color.Empty))
+                {
+                    return;
+                }
+
                 if (IsLineMode)
                 {
                     for (i = shapeList.Count - 1; i >= 0; i--)
@@ -147,7 +166,7 @@ namespace C__project
                             else
                             {
                                 BaseShape secondSelectioinShape = shapeList[i];
-                                if (firstSelectedShape.GetType() == secondSelectioinShape.GetType())
+                                if (firstSelectedShape.GetType() == secondSelectioinShape.GetType() && firstSelectedShape != secondSelectioinShape)
                                 {
                                     connectionsList.Add(new LineConnections(firstSelectedShape, secondSelectioinShape));
                                     pictureBox1.Invalidate();
@@ -177,7 +196,9 @@ namespace C__project
                                 Color currColor = temp.ShapeColor;
                                 int currentWidth = temp.Width;
                                 int currentHeight = temp.Height;
+
                                 shapeList[i] = new RectangleShape(currentX, currentY, currColor, currentWidth, currentHeight + 50);
+
                                 for (int j = connectionsList.Count - 1; j >= 0; j--)
                                 {
                                     if (connectionsList[j].ShapeA == temp || connectionsList[j].ShapeB == temp)
@@ -190,25 +211,25 @@ namespace C__project
                             return;
                         }
                     }
+
+                    switch (currentShape) //checks shape to see what shape it is
+                    {
+                        case "Circle":
+                            shapeList.Add(new CircleShape(e.X, e.Y, currentColor, 50));
+                            break;
+                        case "Parallelogram":
+                            shapeList.Add(new ParallelogramShape(e.X, e.Y, currentColor, 20, 50, 50));
+                            break;
+                        case "Rectangle":
+                            shapeList.Add(new RectangleShape(e.X, e.Y, currentColor, 50, 100));
+                            break;
+                        default:
+                            break;
+                    }
+                    pictureBox1.Invalidate();
                 }
-                switch (currentShape)//checks shape to see what shape it is
-                {
-                    case "Circle":
-                        shapeList.Add(new CircleShape(e.X, e.Y, currentColor, 50));
-                        break;
-                    case "Parallelogram":
-                        shapeList.Add(new ParallelogramShape(e.X, e.Y, currentColor, 20, 50, 50));
-                        break;
-                    case "Rectangle":
-                        shapeList.Add(new RectangleShape(e.X, e.Y, currentColor, 50, 100));
-                        break;
-                    default:
-                        break;
-                }
-                pictureBox1.Invalidate();
             }
         }
-
         private void button4_Click(object sender, EventArgs e)//lets you choose colors
         {
             currentColor = Color.Yellow;
@@ -285,11 +306,42 @@ namespace C__project
                 File.WriteAllText(saveFileDialog1.FileName, json);
             }
         }
+        private void pictureBox1_MouseDown(object? sender, MouseEventArgs e)
+        {
+            dragStartPoint = e.Location; 
+
+            if (!flag || IsLineMode) return;
+            for (int i = shapeList.Count - 1; i >= 0; i--)
+            {
+                if (shapeList[i].IsPointInside(e.X, e.Y))
+                {
+                    draggedShape = shapeList[i];
+                    dragOffset = new Point(e.X - draggedShape.X, e.Y - draggedShape.Y);
+                    return;
+                }
+            }
+        }
+
+        private void pictureBox1_MouseMove(object? sender, MouseEventArgs e)//makes mouse move with offset
+        {
+            if (draggedShape != null)
+            {
+                draggedShape.X = e.X - dragOffset.X;
+                draggedShape.Y = e.Y - dragOffset.Y;
+                pictureBox1.Invalidate();
+            }
+        }
+
+        private void pictureBox1_MouseUp(object? sender, MouseEventArgs e)
+        {
+            draggedShape = null;
+        }
+
     }
     public class MyGameData
     {
-        public List<BaseShape> Shapes { get; set; }
-        public List<LineConnections> Connections { get; set; }
+        public List<BaseShape>? Shapes { get; set; }
+        public List<LineConnections>? Connections { get; set; }
     }
     public class ColorJsonConverter : JsonConverter<Color>
     {
@@ -302,4 +354,5 @@ namespace C__project
             writer.WriteNumberValue(value.ToArgb());
         }
     }
+
 }
